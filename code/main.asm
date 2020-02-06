@@ -24,6 +24,7 @@ Start:
 						
 Main:
 	call	RotinaInicializacao
+	goto 	Main
 	
 RotinaInicializacao:
 	bcf		STATUS, RP1
@@ -69,3 +70,13 @@ LedCountLoop:
 	goto	LedCountLoop	;não
 	clrf	PORTA		; sim
 	return
+	
+Delay_1s:
+	nop
+	return
+	
+Delay_200ms:
+	nop
+	return
+	
+	end
