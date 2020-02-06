@@ -2,7 +2,7 @@
 list p=16f887 
 
 	cblock 0x20
-		contador_led
+		led_cnt
 	endc
 
 	org 	0x00	; vetor de reset
@@ -23,7 +23,7 @@ Start:
 						; ENTRADA E SAÍDA
 						
 Main:
-	goto	RotinaInicializacao
+	call	RotinaInicializacao
 	
 RotinaInicializacao:
 	bcf		STATUS, RP1
@@ -33,7 +33,39 @@ RotinaInicializacao:
 						; EM NIVEL ALTO OU BAIXO(0OU1)
 						;NESSE VAMOS SETAR OS PINOS RA0-RA3 POR ISSO
 						; ESTA 0X0F(00001111)
-	call	Delay_1s	;chama
-	clrf	PORTA		
+	call	Delay_1s	;chama		
 	
-Delay_1s:
+	clrf	led_cnt		; contador=0
+	
+LedCountLoop:	
+	clrf	PORTA		;limpa os pinos RA0-RA3
+	
+	movlw	.0
+	subwf	led_cnt,W	; subtrai w de f resultado de f-w
+	btfsc	STATUS, Z	; verifica se o resultado é 0 ou 1, LED_CNT=0?
+	bsf		PORTA, RA0	;se for 0 ele pula essa linha e executa a proxima, se for 1 ele executa essa linha	
+	
+	movlw	.1
+	subwf	led_cnt,W	; subtrai w de f resultado de f-w
+	btfsc	STATUS, Z	; verifica se o resultado é 0 ou 1, LED_CNT=0?
+	bsf		PORTA, RA1	;se for 0 ele pula essa linha e executa a proxima, se for 1 ele executa essa linha
+	
+	movlw	.2
+	subwf	led_cnt,W	; subtrai w de f resultado de f-w
+	btfsc	STATUS, Z	; verifica se o resultado é 0 ou 1, LED_CNT=0?
+	bsf		PORTA, RA2	;se for 0 ele pula essa linha e executa a proxima, se for 1 ele executa essa linha
+	
+	movlw	.3
+	subwf	led_cnt,W	; subtrai w de f resultado de f-w
+	btfsc	STATUS, Z	; verifica se o resultado é 0 ou 1, LED_CNT=0?
+	bsf		PORTA, RA3	;se for 0 ele pula essa linha e executa a proxima, se for 1 ele executa essa linha
+	
+	call	Delay_200ms
+	incf	led_cnt, F	; incrementa o led_cnt
+	
+	movlw	.4
+	subwf	led_cnt, W	
+	btfss	STATUS, Z	;LED_CNT=4?
+	goto	LedCountLoop	;não
+	clrf	PORTA		; sim
+	return
