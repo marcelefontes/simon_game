@@ -3,6 +3,8 @@ list p=16f887
 
 	cblock 0x20
 		led_cnt
+		aux1
+		aux2
 	endc
 
 	org 	0x00	; vetor de reset
@@ -72,11 +74,34 @@ LedCountLoop:
 	return
 	
 Delay_1s:
-	nop
+	call	Delay_200ms
+	call	Delay_200ms
+	call	Delay_200ms
+	call	Delay_200ms
+	call	Delay_200ms
 	return
 	
-Delay_200ms:
-	nop
+Delay_1ms:
+	
+	movlw	.248
+	movwf	aux1
+	
+Delay1:
+	nop	
+	decfsz	aux1, F		; decrementa a aux1
+	goto	Delay1
 	return
+		
+Delay_200ms:
+	
+	movlw	.200
+	movwf	aux2
+	
+Delay2:
+	call	Delay_1ms
+	decfsz	aux2, F
+	goto	Delay2
+	return
+	
 	
 	end
